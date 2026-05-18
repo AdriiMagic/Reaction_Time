@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Test and train your reaction speed with this beautifully polished, premium Reaction Time Test game. Features state statistics, audio synthesized chimes, dark/light mode, and custom reward systems.">
+  <title>Reaction Pro ⚡ Advanced Reaction Time Test</title>
+
+  <!-- Google Fonts for visual excellence -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Fullscreen Confetti Canvas (renders when beating high score) -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+
+    <!-- Header Block -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <h1>Reaction<span class="gradient-text">Pro</span></h1>
+      </div>
+
+      <div class="controls">
+        <!-- Sound Toggle -->
+        <button id="sound-btn" class="icon-btn" aria-label="Toggle Sound">
+          <svg class="icon sound-on-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg class="icon sound-off-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="theme-btn" class="icon-btn" aria-label="Toggle Theme">
+          <!-- Moon Icon (Dark Theme Active) -->
+          <svg class="icon dark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <!-- Sun Icon (Light Theme Active) -->
+          <svg class="icon light-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="game-wrapper">
+
+      <!-- High Score Badge (Desktop/Header level layout helper) -->
+      <div class="score-display">
+        <div class="score-card best-score-card">
+          <span class="label">Personal Best</span>
+          <span class="value" id="best-score">-- ms</span>
+        </div>
+      </div>
+
+      <!-- Core Interactive Zone -->
+      <div id="reaction-zone" class="reaction-zone idle" tabindex="0">
+
+        <!-- Welcome / Start Screen -->
+        <div id="screen-welcome" class="game-screen active">
+          <div class="welcome-visual">
+            <div class="pulse-ring"></div>
+            <div class="glow-core">⚡</div>
+          </div>
+          <h2 class="screen-title">Reaction Time Test</h2>
+          <p class="screen-desc">Measure your reflex speed in milliseconds. Click the button below, wait for the screen
+            to turn <span class="green-text fw-bold">GREEN</span>, then click as fast as humanly possible.</p>
+
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span class="tip-text">Pro-tip: Press the <strong>Spacebar</strong> key or tap anywhere inside the zone to
+              click!</span>
+          </div>
+
+          <button id="start-btn" class="btn primary-btn btn-lg">Start Test</button>
+        </div>
+
+        <!-- Countdown Screen -->
+        <div id="screen-countdown" class="game-screen">
+          <div class="countdown-circle">
+            <span id="countdown-number" class="countdown-val">3</span>
+          </div>
+          <p class="screen-desc">Get ready...</p>
+        </div>
+
+        <!-- Waiting Screen -->
+        <div id="screen-waiting" class="game-screen">
+          <div class="waiting-visual">
+            <div class="wave-ring"></div>
+            <div class="wave-ring double"></div>
+          </div>
+          <h2 class="screen-title warning-text">WAIT FOR GREEN...</h2>
+          <p class="screen-desc">Do not click early or it will count as a false start!</p>
+        </div>
+
+        <!-- Action/Green Screen -->
+        <div id="screen-react" class="game-screen">
+          <div class="click-ripple"></div>
+          <h2 class="screen-title action-title">CLICK NOW!</h2>
+          <p class="screen-desc text-white">CLICK OR TAP ANYWHERE!</p>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="screen-result" class="game-screen">
+          <div class="result-badge-wrapper">
+            <div class="result-crown hidden" id="result-crown">👑 New Record!</div>
+            <h3 class="result-title" id="result-time">245 ms</h3>
+            <div class="performance-badge" id="result-rating">Great</div>
+          </div>
+          <p class="screen-desc" id="result-feedback">Superb reflexes! You're faster than average.</p>
+          <button id="retry-btn" class="btn primary-btn">Try Again</button>
+        </div>
+
+        <!-- Too Soon Screen -->
+        <div id="screen-early" class="game-screen">
+          <div class="early-visual">❌</div>
+          <h2 class="screen-title crimson-text">TOO SOON!</h2>
+          <p class="screen-desc">You clicked before the screen turned green. Take a deep breath, focus, and try again.
+          </p>
+          <button id="restart-btn" class="btn error-btn">Restart Test</button>
+        </div>
+
+      </div>
+
+      <!-- Stats Dashboard -->
+      <section class="stats-dashboard" id="stats-panel">
+        <h3 class="dashboard-title">
+          <span>📊 Statistics</span>
+          <button id="reset-stats-btn" class="reset-link" title="Reset all stats">Reset</button>
+        </h3>
+
+        <div class="stats-grid">
+          <!-- Average Speed Card -->
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-info">
+              <span class="stat-label">Avg Speed (Last 5)</span>
+              <span class="stat-value" id="avg-score">-- ms</span>
+            </div>
+          </div>
+
+          <!-- Total Attempts Card -->
+          <div class="stat-card">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-info">
+              <span class="stat-label">Tests Completed</span>
+              <span class="stat-value" id="total-attempts">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attempt History -->
+        <div class="history-section">
+          <h4 class="section-title">Recent Attempts</h4>
+          <div class="history-wrapper">
+            <ul class="history-list" id="history-list">
+              <li class="empty-history">No attempts yet. Start the test above to see your history!</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Credits -->
+    <footer class="app-footer">
+      <p>Made with ⚡. Fully offline support & optimized logic.</p>
+    </footer>
+  </div>
+
+  <!-- JavaScript file inclusion -->
+  <script src="app.js"></script>
+</body>
+
+</html>
